@@ -10,6 +10,7 @@ func enableCORS(handler http.HandlerFunc) http.HandlerFunc {
 
 		if r.Method == "OPTIONS" {
 			w.WriteHeader(http.StatusOK)
+			return
 		}
 		handler(w, r)
 	}

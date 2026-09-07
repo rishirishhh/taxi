@@ -33,7 +33,7 @@ spec:
   selector:
     app: trip-service
   ports:
-    - port: 8083
-      name: http
-      targetPort: 8083
+    - port: 9093
+      name: grpc
+      targetPort: 9093
   type: ClusterIP

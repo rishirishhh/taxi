@@ -9,6 +9,7 @@ import (
 	"syscall"
 	"time"
 
+	"ride-sharing/services/api-gateway/grpc_clients"
 	"ride-sharing/shared/env"
 )
 
@@ -18,9 +19,17 @@ var (
 
 func main() {
 	log.Println("Starting API Gateway")
+	tripService, err := grpc_clients.NewTripServiceClient()
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer tripService.Close()
+
+	handler := NewTripHandler(tripService)
 
 	mux := http.NewServeMux()
-	mux.HandleFunc("POST /trip/preview", enableCORS(handleTripPreview))
+	mux.HandleFunc("POST /trip/preview", enableCORS(handler.handleTripPreview))
+	mux.HandleFunc("POST /trip/start", enableCORS(handler.handleTripStart))
 	mux.HandleFunc("/ws/drivers", handleDriveWebsocket)
 	mux.HandleFunc("/ws/riders", handleRidersWebsocket)
 
